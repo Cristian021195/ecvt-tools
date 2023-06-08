@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cristian021195.github.io/resources/css/bootstrap-grid.min.css">
+    <style>*{margin: 0;padding: 0;box-sizing: border-box;}body{font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;}</style>
+</head>
+<body class="container">
+    <header>header</header>
+
+    <main class="">
+        <h1>String Query Builder</h1>
+        <section>
+            <fieldset>
+                <legend>String Query Builder</legend>
+                <form id="query-form">
+                    <label for="table-name">Nombre de tabla</label>
+                    <input type="text" name="table-name" value="tabla1" id="table-name" required minlength="3" maxlength="120" placeholder="Nombre de tabla..">
+                    <label for="php-class-name">(PHP) Nombre de clase</label>
+                    <input type="text" name="php-class-name" value="modeloTabla" id="php-class-name" required minlength="3" maxlength="120" placeholder="Nombre de tabla..">
+                    <label for="fields">Campos, separados por saltos de linea</label>
+                    <textarea name="fields" id="fields" cols="30" rows="10" required placeholder="campo1 (separados por saltos de linea)"></textarea>
+                    <button type="submit">GENERAR</button>
+                </form>
+            </fieldset>
+            <article>
+                <h2>Resultado</h2>
+                <fieldset>
+                    <legend>Consulta Insert SQL</legend>
+                    <div id="insert-query"></div>
+                    <button type="button" id="insert-query-btn">Copiar</button>
+                </fieldset>
+                <fieldset>
+                    <legend>Array Asociativo PHP</legend>
+                    <div id="php-asoc-arr"></div>
+                    <button type="button" id="php-asoc-arr-btn">Copiar</button>
+                </fieldset>
+                
+                <fieldset>
+                    <legend>Propiedades de clases PHP</legend>
+                    <div id="php-class-props"></div>
+                    <button type="button" id="php-class-props-btn">Copiar</button>
+                </fieldset>
+            </article>
+        </section>
+
+    </main>
+
+    <footer>
+        footer
+    </footer>
+
+
+    <script>
+        const $queryForm = document.getElementById('query-form');
+
+        const $php_asoc_arr_btn = document.getElementById('php-asoc-arr-btn');
+        const $php_class_props_btn = document.getElementById('php-class-props-btn');
+        const $php_asoc_arr = document.getElementById('php-asoc-arr');
+        const $php_class_props = document.getElementById('php-class-props');
+        const $insert_query = document.getElementById('insert-query');
+        const $insert_query_btn = document.getElementById('insert-query-btn');
+        
+
+        $queryForm.addEventListener('submit',(e)=>{ // $modeloPobreza->pcb2p393 = $_POST['pcb2p393'];
+            e.preventDefault();
+            const data = new FormData(e.target); let aux_str = "";
+            const fields_arr = data.get('fields').split("\n");
+
+            let insert_query = 'INSERT INTO `'+data.get('table-name')+'` ('; //bloque SQL
+            let field_str = ('`'+fields_arr.join('`, `')+'`');
+            insert_query += `${field_str}) VALUES (`;
+            let values_str = (fields_arr.map(((ef,e_i)=>1)).join(', '));
+
+            let php_class_model_props = fields_arr.map((ef,e_i)=> `$${data.get('php-class-name')}->${ef} = $_POST['${ef}'];`); 
+            let php_assoc_arr_props = (fields_arr.map(((ef,e_i)=>`"${ef}"=>$this->${ef}`)).join(','));
+            //"fechaalta" => $this->fechaalta
+
+
+
+            //console.log(`${insert_query} ${values_str});`)
+            //console.log(php_class_model_props.join('\n'));
+            //$php_asoc_arr.textContent = ;
+            $php_class_props.innerHTML = php_class_model_props.join('\n<br>');
+            $php_asoc_arr.textContent = '['+php_assoc_arr_props+'];';
+            $insert_query.textContent = `${insert_query} ${values_str});`;
+        })
+
+
+        $php_asoc_arr_btn.addEventListener('click', (e)=>{
+            copiar($php_asoc_arr.textContent, e.target)
+        })
+        $php_asoc_arr_btn.addEventListener('click', (e)=>{
+            copiar($php_asoc_arr.textContent, e.target)
+        })
+        $insert_query_btn.addEventListener('click', (e)=>{
+            copiar($insert_query.textContent, e.target)
+        })
+
+
+        function copiar(content='dato vacio', btn){
+            navigator.clipboard.writeText(content).then( (clipText) => {alert('copiado'); btn.textContent='¡Copiado!'}).catch(err=>console.log)
+            setTimeout(() => {
+                btn.textContent = 'Copiar';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

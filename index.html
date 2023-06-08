@@ -6,40 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cristian021195.github.io/resources/css/bootstrap-grid.min.css">
-    <style>*{margin: 0;padding: 0;box-sizing: border-box;}body{font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;}</style>
+    <style>
+    *{margin: 0;padding: 0;box-sizing: border-box;}body{font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;}
+    .d-flex{display: flex;}
+    .flex-wrap{flex-wrap: wrap;}
+    .text-center{text-align: center;}
+    .justify-content-between{justify-content: space-between;}
+    header, footer{width: 100%; background-color: #282828; color: whitesmoke;}
+    </style>
 </head>
 <body class="container">
-    <header>header</header>
+    <header class="p-4">header</header>
 
     <main class="">
         <h1>String Query Builder</h1>
         <section>
-            <fieldset>
+            <fieldset class="p-2">
                 <legend>String Query Builder</legend>
-                <form id="query-form">
-                    <label for="table-name">Nombre de tabla</label>
-                    <input type="text" name="table-name" value="tabla1" id="table-name" required minlength="3" maxlength="120" placeholder="Nombre de tabla..">
-                    <label for="php-class-name">(PHP) Nombre de clase</label>
-                    <input type="text" name="php-class-name" value="modeloTabla" id="php-class-name" required minlength="3" maxlength="120" placeholder="Nombre de tabla..">
-                    <label for="fields">Campos, separados por saltos de linea</label>
+                <form id="query-form" class="row p-2">
+                    <div class="col-md-8 offset-md-2 d-flex justify-content-between py-2">
+                        <label for="table-name">Nombre de tabla: </label>
+                        <input type="text" name="table-name" value="tabla1" id="table-name" required minlength="3" maxlength="120" placeholder="Nombre de tabla..">
+                    </div>
+                    <div class="col-md-8 offset-md-2 d-flex justify-content-between py-2">
+                        <label for="php-class-name">(PHP) Nombre de clase: </label>
+                        <input type="text" name="php-class-name" value="modeloTabla" id="php-class-name" required minlength="3" maxlength="120" placeholder="Nombre de tabla..">
+                    </div>
+                    <label for="fields">Campos, separados por saltos de linea: </label>
                     <textarea name="fields" id="fields" cols="30" rows="10" required placeholder="campo1 (separados por saltos de linea)"></textarea>
-                    <button type="submit">GENERAR</button>
+                    <div class="text-center">
+                        <button type="submit" style="width: 12em;">GENERAR</button>
+                    </div>
                 </form>
             </fieldset>
             <article>
                 <h2>Resultado</h2>
-                <fieldset>
+                <fieldset class="p-2">
                     <legend>Consulta Insert SQL</legend>
                     <div id="insert-query"></div>
                     <button type="button" id="insert-query-btn">Copiar</button>
                 </fieldset>
-                <fieldset>
+                <fieldset class="p-2">
                     <legend>Array Asociativo PHP</legend>
                     <div id="php-asoc-arr"></div>
                     <button type="button" id="php-asoc-arr-btn">Copiar</button>
                 </fieldset>
                 
-                <fieldset>
+                <fieldset class="p-2">
                     <legend>Propiedades de clases PHP</legend>
                     <div id="php-class-props"></div>
                     <button type="button" id="php-class-props-btn">Copiar</button>
@@ -49,7 +62,7 @@
 
     </main>
 
-    <footer>
+    <footer class="p-4">
         footer
     </footer>
 

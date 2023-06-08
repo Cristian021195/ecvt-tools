@@ -41,18 +41,18 @@
             </fieldset>
             <article>
                 <h2>Resultado</h2>
-                <fieldset class="p-2">
+                <fieldset class="p-2 mb-2">
                     <legend>Consulta Insert SQL</legend>
                     <div id="insert-query"></div>
                     <button type="button" id="insert-query-btn">Copiar</button>
                 </fieldset>
-                <fieldset class="p-2">
+                <fieldset class="p-2 mb-2">
                     <legend>Array Asociativo PHP</legend>
                     <div id="php-asoc-arr"></div>
                     <button type="button" id="php-asoc-arr-btn">Copiar</button>
                 </fieldset>
                 
-                <fieldset class="p-2">
+                <fieldset class="p-2 mb-2">
                     <legend>Propiedades de clases PHP</legend>
                     <div id="php-class-props"></div>
                     <button type="button" id="php-class-props-btn">Copiar</button>
@@ -106,8 +106,8 @@
         $php_asoc_arr_btn.addEventListener('click', (e)=>{
             copiar($php_asoc_arr.textContent, e.target)
         })
-        $php_asoc_arr_btn.addEventListener('click', (e)=>{
-            copiar($php_asoc_arr.textContent, e.target)
+        $php_class_props_btn.addEventListener('click', (e)=>{
+            copiar($php_class_props.textContent, e.target)
         })
         $insert_query_btn.addEventListener('click', (e)=>{
             copiar($insert_query.textContent, e.target)
@@ -115,7 +115,7 @@
 
 
         function copiar(content='dato vacio', btn){
-            navigator.clipboard.writeText(content).then( (clipText) => {alert('copiado'); btn.textContent='¡Copiado!'}).catch(err=>console.log)
+            navigator.clipboard.writeText(content).then( (clipText) => {btn.textContent='¡Copiado!'}).catch(err=>console.log)
             setTimeout(() => {
                 btn.textContent = 'Copiar';
             }, 3000);

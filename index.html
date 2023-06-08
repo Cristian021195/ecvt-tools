@@ -42,19 +42,24 @@
             <article>
                 <h2>Resultado</h2>
                 <fieldset class="p-2 mb-2">
-                    <legend>Consulta Insert SQL <button type="button" id="insert-query-btn">Copiar</button> &nbsp; </legend>
+                    <legend>Consulta Insert SQL <button type="button" id="insert-query-btn">Copiar</button>&nbsp;</legend>
                     <div id="insert-query"></div>
+                </fieldset>
+                <fieldset class="p-2 mb-2">
+                    <legend>Consulta Select SQL <button type="button" id="select-query-btn">Copiar</button>&nbsp;</legend>
+                    <div id="select-query"></div>
+                </fieldset>
+                <fieldset class="p-2 mb-2">
+                    <legend>Consulta Update SQL <button type="button" id="update-query-btn">Copiar</button>&nbsp;</legend>
+                    <div id="update-query"></div>
                 </fieldset>
                 <fieldset class="p-2 mb-2">
                     <legend>Array Asociativo PHP <button type="button" id="php-asoc-arr-btn">Copiar</button>&nbsp;</legend>
                     <div id="php-asoc-arr"></div>
-                    
                 </fieldset>
-                
                 <fieldset class="p-2 mb-2">
                     <legend>Propiedades de clases PHP <button type="button" id="php-class-props-btn">Copiar</button>&nbsp;</legend>
                     <div id="php-class-props"></div>
-                    
                 </fieldset>
             </article>
         </section>
@@ -75,6 +80,10 @@
         const $php_class_props = document.getElementById('php-class-props');
         const $insert_query = document.getElementById('insert-query');
         const $insert_query_btn = document.getElementById('insert-query-btn');
+        const $select_query = document.getElementById('select-query');
+        const $select_query_btn = document.getElementById('select-query-btn');
+        const $update_query = document.getElementById('update-query');
+        const $update_query_btn = document.getElementById('update-query-btn');
         
 
         $queryForm.addEventListener('submit',(e)=>{
@@ -86,6 +95,8 @@
             let field_str = ('`'+fields_arr.join('`, `')+'`');
             insert_query += `${field_str}) VALUES (`;
             let values_str = (fields_arr.map(((ef,e_i)=>1)).join(', '));
+            
+            let select_query = 'SELECT '+field_str+' FROM '+ '`'+data.get("table-name")+'`;';
 
             let php_class_model_props = fields_arr.map((ef,e_i)=> `$${data.get('php-class-name')}->${ef} = $_POST['${ef}'];`); 
             let php_assoc_arr_props = (fields_arr.map(((ef,e_i)=>`"${ef}"=>$this->${ef}`)).join(','));
@@ -93,6 +104,7 @@
             $php_class_props.innerHTML = php_class_model_props.join('\n<br>');
             $php_asoc_arr.textContent = '['+php_assoc_arr_props+'];';
             $insert_query.textContent = `${insert_query} ${values_str});`;
+            $select_query.textContent = select_query;
         })
 
 
@@ -104,6 +116,12 @@
         })
         $insert_query_btn.addEventListener('click', (e)=>{
             copiar($insert_query.textContent, e.target)
+        })
+        $select_query_btn.addEventListener('click', (e)=>{
+            copiar($select_query.textContent, e.target)
+        })
+        $update_query_btn.addEventListener('click', (e)=>{
+            copiar($update_query.textContent, e.target)
         })
 
 

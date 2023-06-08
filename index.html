@@ -78,25 +78,19 @@
         const $insert_query_btn = document.getElementById('insert-query-btn');
         
 
-        $queryForm.addEventListener('submit',(e)=>{ // $modeloPobreza->pcb2p393 = $_POST['pcb2p393'];
+        $queryForm.addEventListener('submit',(e)=>{
             e.preventDefault();
             const data = new FormData(e.target); let aux_str = "";
             const fields_arr = data.get('fields').split("\n");
 
-            let insert_query = 'INSERT INTO `'+data.get('table-name')+'` ('; //bloque SQL
+            let insert_query = 'INSERT INTO `'+data.get('table-name')+'` (';
             let field_str = ('`'+fields_arr.join('`, `')+'`');
             insert_query += `${field_str}) VALUES (`;
             let values_str = (fields_arr.map(((ef,e_i)=>1)).join(', '));
 
             let php_class_model_props = fields_arr.map((ef,e_i)=> `$${data.get('php-class-name')}->${ef} = $_POST['${ef}'];`); 
             let php_assoc_arr_props = (fields_arr.map(((ef,e_i)=>`"${ef}"=>$this->${ef}`)).join(','));
-            //"fechaalta" => $this->fechaalta
 
-
-
-            //console.log(`${insert_query} ${values_str});`)
-            //console.log(php_class_model_props.join('\n'));
-            //$php_asoc_arr.textContent = ;
             $php_class_props.innerHTML = php_class_model_props.join('\n<br>');
             $php_asoc_arr.textContent = '['+php_assoc_arr_props+'];';
             $insert_query.textContent = `${insert_query} ${values_str});`;

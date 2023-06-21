@@ -58,6 +58,10 @@
                     <div id="php-asoc-arr"></div>
                 </fieldset>
                 <fieldset class="p-2 mb-2">
+                    <legend>Array Asociativo PHP (POST VARIABLE) <button type="button" id="php-asoc-arr-btn">Copiar</button>&nbsp;</legend>
+                    <div id="php-asoc-arr-post"></div>
+                </fieldset>
+                <fieldset class="p-2 mb-2">
                     <legend>Propiedades de clases PHP <button type="button" id="php-class-props-btn">Copiar</button>&nbsp;</legend>
                     <div id="php-class-props"></div>
                 </fieldset>
@@ -84,7 +88,7 @@
         const $select_query_btn = document.getElementById('select-query-btn');
         const $update_query = document.getElementById('update-query');
         const $update_query_btn = document.getElementById('update-query-btn');
-        
+        const $php_asoc_arr_post = document.getElementById('php-asoc-arr-post');
 
         $queryForm.addEventListener('submit',(e)=>{
             e.preventDefault();
@@ -100,11 +104,13 @@
 
             let php_class_model_props = fields_arr.map((ef,e_i)=> `$${data.get('php-class-name')}->${ef} = $_POST['${ef}'];`); 
             let php_assoc_arr_props = (fields_arr.map(((ef,e_i)=>`"${ef}"=>$this->${ef}`)).join(','));
+            let php_assoc_arr_posts = (fields_arr.map(((ef,e_i)=>`"${ef}"=>$_POST['${ef}']\n`)).join(','));
 
             $php_class_props.innerHTML = php_class_model_props.join('\n<br>');
             $php_asoc_arr.textContent = '['+php_assoc_arr_props+'];';
             $insert_query.textContent = `${insert_query} ${values_str});`;
             $select_query.textContent = select_query;
+            $php_asoc_arr_post.textContent = '['+php_assoc_arr_posts+'];'
         })
 
 
@@ -123,6 +129,7 @@
         $update_query_btn.addEventListener('click', (e)=>{
             copiar($update_query.textContent, e.target)
         })
+        
 
 
         function copiar(content='dato vacio', btn){

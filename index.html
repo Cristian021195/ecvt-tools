@@ -111,7 +111,7 @@
             let php_class_model_props = fields_arr.map((ef,e_i)=> `$${data.get('php-class-name')}->${ef} = $_POST['${ef}'];`); 
             let php_assoc_arr_props = (fields_arr.map(((ef,e_i)=>`"${ef}"=>$this->${ef}`)).join(','));
             let php_assoc_arr_posts = (fields_arr.map(((ef,e_i)=>`"${ef}"=>$_POST['${ef}']\n`)).join(','));
-            let php_isset_arr_posts = (fields_arr.map(((ef,e_i)=>`isset($_POST['${ef}']) ? $_POST['${ef}'] : '' ;\n`)));
+            let php_isset_arr_posts = (fields_arr.map(((ef,e_i)=>`isset($_POST['${ef}']) ? $_POST['${ef}'] : '' ;`)));
 
             $safe_isset.innerHTML = php_isset_arr_posts.join('\n<br>');
             $php_class_props.innerHTML = php_class_model_props.join('\n<br>');

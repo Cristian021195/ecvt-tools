@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSO TOOLS</title>
+    <link rel="stylesheet" href="https://cristian021195.github.io/resources/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body class="container">
+    <header class="p-4 d-flex justify-content-between">
+        <div>Importador de datos SSO</div>
+        <div><a href="./index.html">IR A HOME</a></div>
+    </header>
+
+    <main class="">
+        <h1>String Query Builder</h1>
+        <section>
+            <fieldset class="p-2">
+                <legend>String Query Builder</legend>
+                <form id="query-form" class="row p-2">
+                    <div class="col-md-8 offset-md-2 d-flex justify-content-between py-2">
+                        <label for="table-name">Nombre de tabla: </label>
+                        <input type="text" name="table-name" value="tabla1" id="table-name" required minlength="3" maxlength="120" placeholder="Nombre de tabla..">
+                    </div>
+                    <div class="col-md-8 offset-md-2 d-flex justify-content-between py-2">
+                        <label for="header-table">Campos (separados por ; ): </label>
+                        <input type="text" name="header-table" 
+                        value="id_producto;id_parametro_oper_esp;fecha_limite;no_corresponde" 
+                        id="header-table" required minlength="3" maxlength="120" placeholder="campo1;campo2;campo3">
+                    </div>
+                    <div class="col-md-8 offset-md-2 d-flex justify-content-between py-2">
+                        <label for="update-check">¿Para actualizar? </label>
+                        <input type="checkbox" name="actualizacion" id="update-check" checked>
+                    </div>
+                    <div id="area-actualizacion">
+                        <div class="col-md-8 offset-md-2 d-flex justify-content-between flex-wrap py-2 border-light p-2" >
+                            <label for="update-conditions">Campos de condicion "campo=posicion" WHERE (separados por ; ): </label>
+                            <input type="text" name="update-conditions"
+                                value="0;1"
+                            id="update-conditions" maxlength="120" placeholder="campo1=posicion1;campo2=posicion2">
+                        </div>
+                    </div>
+                    <label for="fields">Valores, cada registro separado por saltos de linea y cada valor por ; </label>
+                    <textarea name="fields" id="fields" cols="30" rows="10" minlength="4" required placeholder="valor1;valor2;valor3">1;5;'2022-09-14 18:00:00';0</textarea>
+                    <div class="text-center">
+                        <button type="submit" style="width: 12em;">GENERAR</button>
+                    </div>
+                </form>
+            </fieldset>
+            <article>
+                <h2>Resultado</h2>
+                <fieldset class="p-2 mb-2">
+                    <legend>Consulta Insert SQL 
+                        <button type="button" id="insert-query-btn">Copiar</button>&nbsp;
+                        <button type="button" id="mostrar-ocultar-insert">Mostrar / Ocultar</button>
+                    </legend>
+                    <div id="insert-query" class="insert-query"></div>
+                </fieldset>
+                <fieldset class="p-2 mb-2">
+                    <legend>Consulta Update SQL 
+                        <button type="button" id="update-query-btn">Copiar</button>&nbsp;
+                        <button type="button" id="mostrar-ocultar-update">Mostrar / Ocultar</button>
+                    </legend>
+                    <div id="update-query" class="update-query"></div>
+                </fieldset>
+            </article>
+        </section>
+
+    </main>
+
+    <footer class="p-4">
+        footer
+    </footer>
+
+
+    <script>
+        let UPDATE_CHECK = false;
+        let mostrar_ocultar_insert = {v:false};
+        let mostrar_ocultar_update = {v:false};
+        const $queryForm = document.getElementById('query-form');
+        const $table_name = document.getElementById('table-name');
+        const $header_table = document.getElementById('header-table');
+        const $fields = document.getElementById('fields');
+        const $php_asoc_arr_btn = document.getElementById('php-asoc-arr-btn');
+        const $php_class_props_btn = document.getElementById('php-class-props-btn');
+        const $php_asoc_arr = document.getElementById('php-asoc-arr');
+        const $php_class_props = document.getElementById('php-class-props');
+        const $insert_query = document.getElementById('insert-query');
+        const $insert_query_btn = document.getElementById('insert-query-btn');
+        const $select_query = document.getElementById('select-query');
+        const $select_query_btn = document.getElementById('select-query-btn');
+        const $update_query = document.getElementById('update-query');
+        const $update_query_btn = document.getElementById('update-query-btn');
+        const $php_asoc_arr_post = document.getElementById('php-asoc-arr-post');
+        const $safe_isset_btn = document.getElementById('safe-isset-btn');
+        const $safe_isset = document.getElementById('safe-isset');
+        const $update_check = document.getElementById('update-check');
+        const $update_conditions = document.getElementById('update-conditions');
+        const $area_actualizacion = document.getElementById('area-actualizacion');
+        const $mostrar_ocultar_insert = document.getElementById('mostrar-ocultar-insert');
+        const $mostrar_ocultar_update = document.getElementById('mostrar-ocultar-update');
+
+        $mostrar_ocultar_update.addEventListener('click', (e)=>{
+            showHide($update_query, mostrar_ocultar_update);
+        })
+
+        $mostrar_ocultar_insert.addEventListener('click', (e)=>{
+            showHide($insert_query, mostrar_ocultar_insert);
+        })
+
+        function showHide($target, v){
+            v.v = !v.v;
+            if(v.v){
+                $target.style.display = 'none';
+            }else{
+                $target.style.display = 'block';
+            }
+        }
+
+        checkUpdate($update_check.checked);
+        $update_check.addEventListener('change',(e)=>{
+            checkUpdate(e.target.checked);
+        });
+
+        function checkUpdate(v){
+            UPDATE_CHECK = v;
+            if(v){
+                $area_actualizacion.style.display = 'block';
+                $update_conditions.removeAttribute('disabled');
+            }else{
+                $area_actualizacion.style.display = 'none';
+                $update_conditions.setAttribute('disabled',true);
+            }
+        }
+
+        $queryForm.addEventListener('submit',(e)=>{
+            e.preventDefault();
+            let datos_cabecera = $header_table.value.split(';');
+            let filas_cuerpo = $fields.value.split("\n");
+            let datos_cuerpo = filas_cuerpo[0].length;
+            let DATA_ERROR = false;
+
+            let datos_update_conditions_pos;
+            let datos_update_conditions_headers = [];
+            if(UPDATE_CHECK){
+                datos_update_conditions_pos = $update_conditions.value.split(';').map((e)=>parseInt(e));
+                datos_update_conditions_pos.forEach(pos => {
+                    datos_update_conditions_headers.push(datos_cabecera[pos]);
+                });
+            }
+
+            for (let i = 0; i < filas_cuerpo.length; i++) {
+                let eval = filas_cuerpo[i].split(';');
+                if(eval.length !== datos_cabecera.length){
+                    DATA_ERROR = true;
+                    break;
+                }
+            }
+            if(DATA_ERROR){
+                alert('La cantidad de campos no coincide con la cantidad de valores en una o mas filas');
+            }else{
+                let SQL_INSERT_QUERY = '';
+                let SQL_UPDATE_QUERY = '';
+                for (let f = 0; f < filas_cuerpo.length; f++){
+                    let row = filas_cuerpo[f].split(';');
+                    let headers_insert_query = ('`'+datos_cabecera.join('`, `')+'`');
+
+                    let insert_query = 'INSERT INTO '+$table_name.value+' (';
+                    insert_query += `${headers_insert_query}) VALUES (`;
+                    let values_insert_str = (row.map(((ef,e_i)=>ef)).join(', '));
+                    SQL_INSERT_QUERY += `${insert_query} ${values_insert_str});\n`;
+
+                    let update_query = 'UPDATE '+$table_name.value+' SET ';
+                    let values_update_str;
+                    let out = '';
+                    if(UPDATE_CHECK){
+                        values_update_str = row.map(((ef,e_i)=>{
+                            if(!datos_update_conditions_pos.includes(e_i)){
+                                return `${datos_cabecera[e_i]} = ${ef}`;
+                            }
+                        }));
+                        values_update_str = values_update_str.filter(e=> e !== undefined && e )
+                        //datos_update_conditions_headers
+                        let conditions = '';
+                        datos_update_conditions_headers.forEach((duch, duchi)=>{
+                            conditions += `${duch}=${row[duchi]} AND `;
+                        });
+                        conditions = conditions.slice(0,-5);
+                        out = `${update_query} ${values_update_str} WHERE ${conditions};`;
+                    }else{
+                        values_update_str = ((row.map(((ef,e_i)=>{
+                            return `${datos_cabecera[e_i]} = ${ef}`
+                        })).join(', ')));
+                        out = `${update_query} ${values_update_str}`;                        
+                    }                    
+                    SQL_UPDATE_QUERY += `${out}\n`;
+                    
+                    /*let values_update_str = (row.map(((ef,e_i)=>ef)).join(', '));
+                    SQL_INSERT_QUERY += `${insert_query} ${values_update_str});\n`;*/
+                    
+                }
+                $insert_query.textContent = SQL_INSERT_QUERY;
+                $update_query.textContent = SQL_UPDATE_QUERY;
+            }
+        })
+        $insert_query_btn.addEventListener('click', (e)=>{
+            copiar($insert_query.textContent, e.target)
+        })
+        $update_query_btn.addEventListener('click', (e)=>{
+            copiar($update_query.textContent, e.target)
+        })
+        function copiar(content='dato vacio', btn){
+            navigator.clipboard.writeText(content).then( (clipText) => {btn.textContent='¡Copiado!'}).catch(err=>console.log)
+            setTimeout(() => {
+                btn.textContent = 'Copiar';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
